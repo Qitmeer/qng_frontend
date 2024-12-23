@@ -1,8 +1,8 @@
-import * as Sentry from '@sentry/react';
 import React from 'react';
 
 import isBodyAllowed from 'lib/api/isBodyAllowed';
 import type { ResourceError, ResourcePath } from 'lib/api/resources';
+import { useRollbar } from 'lib/rollbar';
 
 export interface Params {
   method?: RequestInit['method'];
@@ -14,9 +14,12 @@ export interface Params {
 
 interface Meta {
   resource?: ResourcePath;
+  logError?: boolean;
 }
 
 export default function useFetch() {
+  const rollbar = useRollbar();
+
   return React.useCallback(<Success, Error>(path: string, params?: Params, meta?: Meta): Promise<Success | ResourceError<Error>> => {
     const _body = params?.body;
     const isFormData = _body instanceof FormData;
@@ -44,12 +47,32 @@ export default function useFetch() {
     };
 
     return fetch(path, reqParams).then(response => {
+
+      const isJson = response.headers.get('content-type')?.includes('application/json');
+
       if (!response.ok) {
         const error = {
           status: response.status,
           statusText: response.statusText,
         };
-        Sentry.captureException(new Error('Client fetch failed'), { extra: { ...error, ...meta }, tags: { source: 'fetch' } });
+
+        if (meta?.logError && rollbar) {
+          rollbar.warn('Client fetch failed', {
+            resource: meta?.resource,
+            status_code: error.status,
+            status_text: error.statusText,
+          });
+        }
+
+        if (!isJson) {
+          return response.text().then(
+            (textError) => Promise.reject({
+              payload: textError,
+              status: response.status,
+              statusText: response.statusText,
+            }),
+          );
+        }
 
         return response.json().then(
           (jsonError) => Promise.reject({
@@ -63,8 +86,12 @@ export default function useFetch() {
         );
 
       } else {
-        return response.json() as Promise<Success>;
+        if (isJson) {
+          return response.json() as Promise<Success>;
+        }
+
+        return Promise.resolve() as Promise<Success>;
       }
     });
-  }, [ ]);
+  }, [ rollbar ]);
 }

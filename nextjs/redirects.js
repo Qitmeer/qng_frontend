@@ -49,16 +49,8 @@ const oldUrls = [
     destination: '/account/custom-abi',
   },
   {
-    source: '/account/public_tags_request',
-    destination: '/account/public-tags-request',
-  },
-  {
-    source: '/account/public_tags_request/:id/edit',
-    destination: '/account/public-tags-request',
-  },
-  {
-    source: '/account/public_tags_request/new',
-    destination: '/account/public-tags-request',
+    source: '/account/public-tags-request',
+    destination: '/public-tags/submit',
   },
 
   // TRANSACTIONS
@@ -191,6 +183,14 @@ const oldUrls = [
 
   // TOKENS
   {
+    source: '/bridged-tokens',
+    destination: '/tokens/?tab=bridged',
+  },
+  {
+    source: '/bridged-tokens/:chain_name',
+    destination: '/tokens/?tab=bridged',
+  },
+  {
     source: '/tokens/:hash/:path*',
     destination: '/token/:hash/:path*',
   },
@@ -233,6 +233,32 @@ const oldUrls = [
   {
     source: '/token/:hash/write-proxy',
     destination: '/token/:hash?tab=write_proxy',
+  },
+
+  // ROLLUPs
+  {
+    source: '/l2-txn-batches',
+    destination: '/batches',
+  },
+  {
+    source: '/zkevm-l2-txn-batches',
+    destination: '/batches',
+  },
+  {
+    source: '/zkevm-l2-txn-batch/:path*',
+    destination: '/batches/:path*',
+  },
+  {
+    source: '/l2-deposits',
+    destination: '/deposits',
+  },
+  {
+    source: '/l2-withdrawals',
+    destination: '/withdrawals',
+  },
+  {
+    source: '/l2-output-roots',
+    destination: '/output-roots',
   },
 ];
 

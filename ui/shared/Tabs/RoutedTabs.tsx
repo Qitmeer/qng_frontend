@@ -13,11 +13,28 @@ interface Props extends ThemingProps<'Tabs'> {
   tabs: Array<RoutedTab>;
   tabListProps?: ChakraProps | (({ isSticky, activeTabIndex }: { isSticky: boolean; activeTabIndex: number }) => ChakraProps);
   rightSlot?: React.ReactNode;
+  rightSlotProps?: ChakraProps;
+  leftSlot?: React.ReactNode;
+  leftSlotProps?: ChakraProps;
   stickyEnabled?: boolean;
   className?: string;
+  onTabChange?: (index: number) => void;
+  isLoading?: boolean;
 }
 
-const RoutedTabs = ({ tabs, tabListProps, rightSlot, stickyEnabled, className, ...themeProps }: Props) => {
+const RoutedTabs = ({
+  tabs,
+  tabListProps,
+  rightSlot,
+  rightSlotProps,
+  leftSlot,
+  leftSlotProps,
+  stickyEnabled,
+  className,
+  onTabChange,
+  isLoading,
+  ...themeProps
+}: Props) => {
   const router = useRouter();
   const tabIndex = useTabIndexFromQuery(tabs);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -26,12 +43,15 @@ const RoutedTabs = ({ tabs, tabListProps, rightSlot, stickyEnabled, className, .
     const nextTab = tabs[index];
 
     const queryForPathname = _pickBy(router.query, (value, key) => router.pathname.includes(`[${ key }]`));
+    const tabId = Array.isArray(nextTab.id) ? nextTab.id[0] : nextTab.id;
     router.push(
-      { pathname: router.pathname, query: { ...queryForPathname, tab: nextTab.id } },
+      { pathname: router.pathname, query: { ...queryForPathname, tab: tabId } },
       undefined,
       { shallow: true },
     );
-  }, [ tabs, router ]);
+
+    onTabChange?.(index);
+  }, [ tabs, router, onTabChange ]);
 
   useEffect(() => {
     if (router.query.scroll_to_tabs) {
@@ -54,10 +74,14 @@ const RoutedTabs = ({ tabs, tabListProps, rightSlot, stickyEnabled, className, .
     <TabsWithScroll
       tabs={ tabs }
       tabListProps={ tabListProps }
+      leftSlot={ leftSlot }
+      leftSlotProps={ leftSlotProps }
       rightSlot={ rightSlot }
+      rightSlotProps={ rightSlotProps }
       stickyEnabled={ stickyEnabled }
       onTabChange={ handleTabChange }
       defaultTabIndex={ tabIndex }
+      isLoading={ isLoading }
       { ...themeProps }
     />
   );

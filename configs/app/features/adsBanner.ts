@@ -1,15 +1,17 @@
 import type { Feature } from './types';
 import type { AdButlerConfig } from 'types/client/adButlerConfig';
-import type { AdBannerProviders } from 'types/client/adProviders';
+import { SUPPORTED_AD_BANNER_PROVIDERS } from 'types/client/adProviders';
+import type { AdBannerProviders, AdBannerAdditionalProviders } from 'types/client/adProviders';
 
 import { getEnvValue, parseEnvJson } from '../utils';
 
 const provider: AdBannerProviders = (() => {
-  const envValue = getEnvValue(process.env.NEXT_PUBLIC_AD_BANNER_PROVIDER) as AdBannerProviders;
-  const SUPPORTED_AD_BANNER_PROVIDERS: Array<AdBannerProviders> = [ 'slise', 'adbutler', 'coinzilla', 'none' ];
+  const envValue = getEnvValue('NEXT_PUBLIC_AD_BANNER_PROVIDER') as AdBannerProviders;
 
   return envValue && SUPPORTED_AD_BANNER_PROVIDERS.includes(envValue) ? envValue : 'slise';
 })();
+
+const additionalProvider = getEnvValue('NEXT_PUBLIC_AD_BANNER_ADDITIONAL_PROVIDER') as AdBannerAdditionalProviders;
 
 const title = 'Banner ads';
 
@@ -23,12 +25,21 @@ type AdsBannerFeaturePayload = {
       mobile: AdButlerConfig;
     };
   };
-}
+} | {
+  provider: Exclude<AdBannerProviders, 'adbutler' | 'none'>;
+  additionalProvider: 'adbutler';
+  adButler: {
+    config: {
+      desktop: AdButlerConfig;
+      mobile: AdButlerConfig;
+    };
+  };
+};
 
 const config: Feature<AdsBannerFeaturePayload> = (() => {
   if (provider === 'adbutler') {
-    const desktopConfig = parseEnvJson<AdButlerConfig>(getEnvValue(process.env.NEXT_PUBLIC_AD_ADBUTLER_CONFIG_DESKTOP));
-    const mobileConfig = parseEnvJson<AdButlerConfig>(getEnvValue(process.env.NEXT_PUBLIC_AD_ADBUTLER_CONFIG_MOBILE));
+    const desktopConfig = parseEnvJson<AdButlerConfig>(getEnvValue('NEXT_PUBLIC_AD_ADBUTLER_CONFIG_DESKTOP'));
+    const mobileConfig = parseEnvJson<AdButlerConfig>(getEnvValue('NEXT_PUBLIC_AD_ADBUTLER_CONFIG_MOBILE'));
 
     if (desktopConfig && mobileConfig) {
       return Object.freeze({
@@ -44,6 +55,24 @@ const config: Feature<AdsBannerFeaturePayload> = (() => {
       });
     }
   } else if (provider !== 'none') {
+
+    if (additionalProvider === 'adbutler') {
+      const desktopConfig = parseEnvJson<AdButlerConfig>(getEnvValue('NEXT_PUBLIC_AD_ADBUTLER_CONFIG_DESKTOP'));
+      const mobileConfig = parseEnvJson<AdButlerConfig>(getEnvValue('NEXT_PUBLIC_AD_ADBUTLER_CONFIG_MOBILE'));
+
+      return Object.freeze({
+        title,
+        isEnabled: true,
+        provider,
+        additionalProvider,
+        adButler: {
+          config: {
+            desktop: desktopConfig,
+            mobile: mobileConfig,
+          },
+        },
+      });
+    }
     return Object.freeze({
       title,
       isEnabled: true,

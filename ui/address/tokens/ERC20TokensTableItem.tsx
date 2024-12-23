@@ -22,7 +22,9 @@ const ERC20TokensTableItem = ({
   } = getCurrencyValue({ value: value, exchangeRate: token.exchange_rate, decimals: token.decimals, accuracy: 8, accuracyUsd: 2 });
 
   return (
-    <Tr>
+    <Tr
+      role="group"
+    >
       <Td verticalAlign="middle">
         <TokenEntity
           token={ token }
@@ -37,9 +39,10 @@ const ERC20TokensTableItem = ({
           <AddressEntity
             address={{ hash: token.address }}
             isLoading={ isLoading }
+            truncation="constant"
             noIcon
           />
-          <AddressAddToWallet token={ token } ml={ 4 } isLoading={ isLoading }/>
+          <AddressAddToWallet token={ token } ml={ 4 } isLoading={ isLoading } opacity="0" _groupHover={{ opacity: 1 }}/>
         </Flex>
       </Td>
       <Td isNumeric verticalAlign="middle">

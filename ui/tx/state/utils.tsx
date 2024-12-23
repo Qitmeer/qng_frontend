@@ -8,9 +8,10 @@ import config from 'configs/app';
 import { ZERO_ADDRESS } from 'lib/consts';
 import { nbsp, space } from 'lib/html-entities';
 import getNetworkValidatorTitle from 'lib/networks/getNetworkValidatorTitle';
+import { currencyUnits } from 'lib/units';
 import Tag from 'ui/shared/chakra/Tag';
+import NftEntity from 'ui/shared/entities/nft/NftEntity';
 import TokenEntity from 'ui/shared/entities/token/TokenEntity';
-import TokenTransferNft from 'ui/shared/TokenTransfer/TokenTransferNft';
 
 import TxStateTokenIdList from './TxStateTokenIdList';
 
@@ -59,12 +60,12 @@ export function getStateElements(data: TxStateChange, isLoading?: boolean) {
       return {
         before: (
           <Skeleton isLoaded={ !isLoading } wordBreak="break-all" display="inline-block">
-            { beforeBn.toFormat() } { config.chain.currency.symbol }
+            { beforeBn.toFormat() } { currencyUnits.ether }
           </Skeleton>
         ),
         after: (
           <Skeleton isLoaded={ !isLoading } wordBreak="break-all" display="inline-block">
-            { afterBn.toFormat() } { config.chain.currency.symbol }
+            { afterBn.toFormat() } { currencyUnits.ether }
           </Skeleton>
         ),
         change: (
@@ -104,7 +105,7 @@ export function getStateElements(data: TxStateChange, isLoading?: boolean) {
         const changeSign = differenceBn.isGreaterThanOrEqualTo(0) ? '+' : '-';
 
         return (
-          <Skeleton isLoaded={ !isLoading } display="inline-block" color={ changeColor }>
+          <Skeleton isLoaded={ !isLoading } display="inline-block" color={ changeColor } wordBreak="break-all">
             <span>{ changeSign }{ nbsp }{ differenceBn.abs().toFormat() }</span>
           </Skeleton>
         );
@@ -114,11 +115,9 @@ export function getStateElements(data: TxStateChange, isLoading?: boolean) {
         if (!Array.isArray(data.change)) {
           if ('token_id' in data && data.token_id) {
             return (
-              <TokenTransferNft
+              <NftEntity
                 hash={ data.token.address }
                 id={ data.token_id }
-                w="auto"
-                truncation="constant"
                 isLoading={ isLoading }
               />
             );
@@ -133,14 +132,14 @@ export function getStateElements(data: TxStateChange, isLoading?: boolean) {
       return {
         before: data.balance_before ? (
           <Flex whiteSpace="pre-wrap" justifyContent={{ base: 'flex-start', lg: 'flex-end' }} flexWrap="wrap">
-            <Skeleton isLoaded={ !isLoading }>{ beforeBn.toFormat() }</Skeleton>
+            <Skeleton isLoaded={ !isLoading } wordBreak="break-all">{ beforeBn.toFormat() }</Skeleton>
             <span>{ space }</span>
             { tokenLink }
           </Flex>
         ) : null,
         after: data.balance_after ? (
           <Flex whiteSpace="pre-wrap" justifyContent={{ base: 'flex-start', lg: 'flex-end' }} flexWrap="wrap">
-            <Skeleton isLoaded={ !isLoading }>{ afterBn.toFormat() }</Skeleton>
+            <Skeleton isLoaded={ !isLoading } wordBreak="break-all">{ afterBn.toFormat() }</Skeleton>
             <span>{ space }</span>
             { tokenLink }
           </Flex>

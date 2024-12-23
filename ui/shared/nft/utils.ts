@@ -1,5 +1,7 @@
 export type MediaType = 'image' | 'video' | 'html';
 
+export type SrcType = 'url' | 'blob';
+
 const IMAGE_EXTENSIONS = [
   '.jpg', 'jpeg',
   '.png',
@@ -26,3 +28,23 @@ export function getPreliminaryMediaType(url: string): MediaType | undefined {
     return 'video';
   }
 }
+
+export const mediaStyleProps = {
+  transitionProperty: 'transform',
+  transitionDuration: 'normal',
+  transitionTimingFunction: 'ease',
+  cursor: 'pointer',
+  _hover: {
+    base: {},
+    lg: {
+      transform: 'scale(1.2)',
+    },
+  },
+};
+
+export const videoPlayProps = {
+  disablePictureInPicture: true,
+  loop: true,
+  muted: true,
+  playsInline: true,
+};

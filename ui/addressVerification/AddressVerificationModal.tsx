@@ -1,10 +1,12 @@
-import { Icon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Link } from '@chakra-ui/react';
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Link } from '@chakra-ui/react';
 import React from 'react';
 
 import type { AddressVerificationFormFirstStepFields, AddressCheckStatusSuccess } from './types';
 import type { VerifiedAddress } from 'types/api/account';
 
-import eastArrowIcon from 'icons/arrows/east.svg';
+import config from 'configs/app';
+import * as mixpanel from 'lib/mixpanel/index';
+import IconSvg from 'ui/shared/IconSvg';
 import Web3ModalProvider from 'ui/shared/Web3ModalProvider';
 
 import AddressVerificationStepAddress from './steps/AddressVerificationStepAddress';
@@ -20,22 +22,38 @@ interface Props {
   onAddTokenInfoClick: (address: string) => void;
   onShowListClick: () => void;
   defaultAddress?: string;
+  pageType: string;
 }
 
-const AddressVerificationModal = ({ defaultAddress, isOpen, onClose, onSubmit, onAddTokenInfoClick, onShowListClick }: Props) => {
+const AddressVerificationModal = ({ defaultAddress, isOpen, onClose, onSubmit, onAddTokenInfoClick, onShowListClick, pageType }: Props) => {
   const [ stepIndex, setStepIndex ] = React.useState(0);
   const [ data, setData ] = React.useState<StateData>({ address: '', signingMessage: '' });
+
+  React.useEffect(() => {
+    isOpen && mixpanel.logEvent(
+      mixpanel.EventTypes.VERIFY_ADDRESS,
+      { Action: 'Form opened', 'Page type': pageType },
+    );
+  }, [ isOpen, pageType ]);
 
   const handleGoToSecondStep = React.useCallback((firstStepResult: typeof data) => {
     setData(firstStepResult);
     setStepIndex((prev) => prev + 1);
-  }, []);
+    mixpanel.logEvent(
+      mixpanel.EventTypes.VERIFY_ADDRESS,
+      { Action: 'Address entered', 'Page type': pageType },
+    );
+  }, [ pageType ]);
 
-  const handleGoToThirdStep = React.useCallback((address: VerifiedAddress) => {
+  const handleGoToThirdStep = React.useCallback((address: VerifiedAddress, signMethod: 'wallet' | 'manual') => {
     onSubmit(address);
     setStepIndex((prev) => prev + 1);
     setData((prev) => ({ ...prev, isToken: Boolean(address.metadata.tokenName) }));
-  }, [ onSubmit ]);
+    mixpanel.logEvent(
+      mixpanel.EventTypes.VERIFY_ADDRESS,
+      { Action: 'Sign ownership', 'Page type': pageType, 'Sign method': signMethod },
+    );
+  }, [ onSubmit, pageType ]);
 
   const handleGoToPrevStep = React.useCallback(() => {
     setStepIndex((prev) => prev - 1);
@@ -59,8 +77,13 @@ const AddressVerificationModal = ({ defaultAddress, isOpen, onClose, onSubmit, o
     },
     {
       title: 'Copy and sign message',
-      content: <AddressVerificationStepSignature { ...data } onContinue={ handleGoToThirdStep }/>,
-      fallback: <AddressVerificationStepSignature { ...data } onContinue={ handleGoToThirdStep } noWeb3Provider/>,
+      content: (
+        <AddressVerificationStepSignature
+          { ...data }
+          onContinue={ handleGoToThirdStep }
+          noWeb3Provider={ !config.features.blockchainInteraction.isEnabled }
+        />
+      ),
     },
     {
       title: 'Congrats! Address is verified.',
@@ -83,14 +106,14 @@ const AddressVerificationModal = ({ defaultAddress, isOpen, onClose, onSubmit, o
         <ModalHeader fontWeight="500" textStyle="h3" mb={ 6 }>
           { stepIndex !== 0 && (
             <Link mr={ 3 } onClick={ handleGoToPrevStep }>
-              <Icon as={ eastArrowIcon } boxSize={ 6 } transform="rotate(180deg)" verticalAlign="middle"/>
+              <IconSvg name="arrows/east" boxSize={ 6 } transform="rotate(180deg)" verticalAlign="middle" color="gray.400"/>
             </Link>
           ) }
           <span>{ step.title }</span>
         </ModalHeader>
         <ModalCloseButton/>
         <ModalBody mb={ 0 }>
-          <Web3ModalProvider fallback={ step?.fallback || step.content }>
+          <Web3ModalProvider>
             { step.content }
           </Web3ModalProvider>
         </ModalBody>

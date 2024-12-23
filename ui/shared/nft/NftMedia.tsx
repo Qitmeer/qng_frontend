@@ -1,64 +1,41 @@
-import { AspectRatio, chakra, Skeleton, useColorModeValue } from '@chakra-ui/react';
+import { AspectRatio, chakra, Skeleton, useDisclosure } from '@chakra-ui/react';
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import type { StaticRoute } from 'nextjs-routes';
-import { route } from 'nextjs-routes';
-
-import useFetch from 'lib/hooks/useFetch';
+import type { TokenInstance } from 'types/api/token';
 
 import NftFallback from './NftFallback';
 import NftHtml from './NftHtml';
+import NftHtmlFullscreen from './NftHtmlFullscreen';
 import NftImage from './NftImage';
+import NftImageFullscreen from './NftImageFullscreen';
 import NftVideo from './NftVideo';
-import type { MediaType } from './utils';
-import { getPreliminaryMediaType } from './utils';
+import NftVideoFullscreen from './NftVideoFullscreen';
+import useNftMediaInfo from './useNftMediaInfo';
+import { mediaStyleProps } from './utils';
 
 interface Props {
-  url: string | null;
+  data: TokenInstance;
   className?: string;
   isLoading?: boolean;
+  withFullscreen?: boolean;
+  autoplayVideo?: boolean;
 }
 
-const NftMedia = ({ url, className, isLoading }: Props) => {
-  const [ type, setType ] = React.useState<MediaType | undefined>();
-  const [ isMediaLoading, setIsMediaLoading ] = React.useState(Boolean(url));
+const NftMedia = ({ data, className, isLoading, withFullscreen, autoplayVideo }: Props) => {
+  const [ isMediaLoading, setIsMediaLoading ] = React.useState(true);
   const [ isLoadingError, setIsLoadingError ] = React.useState(false);
 
-  const bgColor = useColorModeValue('blackAlpha.50', 'whiteAlpha.50');
-
-  const fetch = useFetch();
   const { ref, inView } = useInView({ triggerOnce: true });
 
+  const mediaInfo = useNftMediaInfo({ data, isEnabled: !isLoading && inView });
+
   React.useEffect(() => {
-    if (!url || isLoading || !inView) {
-      return;
+    if (!isLoading && !mediaInfo) {
+      setIsMediaLoading(false);
+      setIsLoadingError(true);
     }
-
-    // media could be either image, gif or video
-    // so we pre-fetch the resources in order to get its content type
-    // have to do it via Node.js due to strict CSP for connect-src
-    // but in order not to abuse our server firstly we check file url extension
-    // and if it is valid we will trust it and display corresponding media component
-
-    const preliminaryType = getPreliminaryMediaType(url);
-
-    if (preliminaryType) {
-      setType(preliminaryType);
-      return;
-    }
-
-    const mediaTypeResourceUrl = route({ pathname: '/node-api/media-type' as StaticRoute<'/api/media-type'>['pathname'], query: { url } });
-    fetch(mediaTypeResourceUrl)
-      .then((_data) => {
-        const data = _data as { type: MediaType | undefined };
-        setType(data.type || 'image');
-      })
-      .catch(() => {
-        setType('image');
-      });
-
-  }, [ url, isLoading, fetch, inView ]);
+  }, [ isLoading, mediaInfo ]);
 
   const handleMediaLoaded = React.useCallback(() => {
     setIsMediaLoading(false);
@@ -69,18 +46,65 @@ const NftMedia = ({ url, className, isLoading }: Props) => {
     setIsLoadingError(true);
   }, []);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const content = (() => {
-    if (!url || isLoadingError) {
-      return <NftFallback/>;
+    if (isLoading) {
+      return null;
     }
 
-    switch (type) {
-      case 'video':
-        return <NftVideo src={ url } onLoad={ handleMediaLoaded } onError={ handleMediaLoadError }/>;
+    if (!mediaInfo || isLoadingError) {
+      const styleProps = withFullscreen ? {} : mediaStyleProps;
+      return <NftFallback { ...styleProps }/>;
+    }
+
+    const props = {
+      onLoad: handleMediaLoaded,
+      onError: handleMediaLoadError,
+      ...(withFullscreen ? { onClick: onOpen } : {}),
+    };
+
+    switch (mediaInfo.mediaType) {
+      case 'video': {
+        return <NftVideo { ...props } src={ mediaInfo.src } autoPlay={ autoplayVideo } instance={ data }/>;
+      }
       case 'html':
-        return <NftHtml src={ url } onLoad={ handleMediaLoaded } onError={ handleMediaLoadError }/>;
-      case 'image':
-        return <NftImage url={ url } onLoad={ handleMediaLoaded } onError={ handleMediaLoadError }/>;
+        return <NftHtml { ...props } src={ mediaInfo.src }/>;
+      case 'image': {
+        if (mediaInfo.srcType === 'url' && data.thumbnails) {
+          const srcSet = data.thumbnails['250x250'] && data.thumbnails['500x500'] ? `${ data.thumbnails['500x500'] } 2x` : undefined;
+          const src = (srcSet ? data.thumbnails['250x250'] : undefined) || data.thumbnails['500x500'] || data.thumbnails.original;
+          if (src) {
+            return <NftImage { ...props } src={ src } srcSet={ srcSet }/>;
+          }
+        }
+
+        return <NftImage { ...props } src={ mediaInfo.src }/>;
+      }
+      default:
+        return null;
+    }
+  })();
+
+  const modal = (() => {
+    if (!mediaInfo || !withFullscreen || isLoading) {
+      return null;
+    }
+
+    const props = {
+      isOpen,
+      onClose,
+    };
+
+    switch (mediaInfo.mediaType) {
+      case 'video':
+        return <NftVideoFullscreen { ...props } src={ mediaInfo.src }/>;
+      case 'html':
+        return <NftHtmlFullscreen { ...props } src={ mediaInfo.src }/>;
+      case 'image': {
+        const src = mediaInfo.srcType === 'url' && data.thumbnails?.original ? data.thumbnails.original : mediaInfo.src;
+        return <NftImageFullscreen { ...props } src={ src }/>;
+      }
       default:
         return null;
     }
@@ -90,11 +114,11 @@ const NftMedia = ({ url, className, isLoading }: Props) => {
     <AspectRatio
       ref={ ref }
       className={ className }
-      bgColor={ isLoading || isMediaLoading ? 'transparent' : bgColor }
       ratio={ 1 / 1 }
       overflow="hidden"
       borderRadius="md"
       objectFit="contain"
+      isolation="isolate"
       sx={{
         '&>img, &>video': {
           objectFit: 'contain',
@@ -103,6 +127,7 @@ const NftMedia = ({ url, className, isLoading }: Props) => {
     >
       <>
         { content }
+        { modal }
         { isMediaLoading && <Skeleton position="absolute" left={ 0 } top={ 0 } w="100%" h="100%" zIndex="1"/> }
       </>
     </AspectRatio>
