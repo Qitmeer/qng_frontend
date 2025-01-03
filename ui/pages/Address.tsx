@@ -206,7 +206,7 @@ const AddressPageContent = () => {
       {
         id: 'internal_txns',
         title: 'Internal txns',
-        count: addressTabsCountersQuery.data?.internal_txs_count,
+        count: addressTabsCountersQuery.data?.internal_transactions_count,
         component: <AddressInternalTxs scrollRef={ tabsScrollRef } shouldRender={ !isTabsLoading } isQueryEnabled={ areQueriesEnabled }/>,
       },
       addressTabsCountersQuery.data?.celo_election_rewards_count ? {
@@ -406,7 +406,7 @@ const AddressPageContent = () => {
         <SolidityscanReport hash={ hash }/> }
       { !isLoading && addressEnsDomainsQuery.data && config.features.nameService.isEnabled &&
         <AddressEnsDomains query={ addressEnsDomainsQuery } addressHash={ hash } mainDomainName={ addressQuery.data?.ens_domain_name }/> }
-      <NetworkExplorers type="address" pathParam={ hash }/>
+      <NetworkExplorers type="address" pathParam={ hash.toLowerCase() }/>
     </Flex>
   );
 
