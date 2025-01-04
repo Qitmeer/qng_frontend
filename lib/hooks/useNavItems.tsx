@@ -50,7 +50,20 @@ export default function useNavItems(): ReturnType {
       icon: 'user_op',
       isActive: pathname === '/ops' || pathname === '/op/[hash]',
     } : null;
-
+    const utxoblocks: NavItem | null = {
+      text: 'Blocks',
+      nextRoute: { pathname: '/qitmeer_blocks' as const },
+      icon: 'block',
+      isActive:
+        pathname === '/qitmeer_blocks' || pathname === '/qitmeer_block/[height_or_hash]',
+    };
+    const utxotxs: NavItem | null = {
+      text: 'Transactions',
+      nextRoute: { pathname: '/qitmeer_txs' as const },
+      icon: 'transactions',
+      isActive:
+        pathname === '/qitmeer_txs' || pathname === '/qitmeer_tx/[hash]',
+    };
     const verifiedContracts: NavItem | null =
      {
        text: 'Verified contracts',
@@ -183,7 +196,7 @@ export default function useNavItems(): ReturnType {
         },
       ].filter(Boolean);
     }
-
+    const utxoblockchainNavItems = [ utxotxs, utxoblocks ].filter(Boolean);
     const tokensNavItems = [
       {
         text: 'Tokens',
@@ -250,6 +263,12 @@ export default function useNavItems(): ReturnType {
     ].filter(Boolean);
 
     const mainNavItems: ReturnType['mainNavItems'] = [
+      {
+        text: 'UTXOExplorer',
+        icon: 'globe-b',
+        isActive: utxoblockchainNavItems.flat().some(item => isInternalItem(item) && item.isActive),
+        subItems: utxoblockchainNavItems,
+      },
       {
         text: 'Blockchain',
         icon: 'globe-b',

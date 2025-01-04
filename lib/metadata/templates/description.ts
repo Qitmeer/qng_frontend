@@ -72,6 +72,13 @@ const TEMPLATE_MAP: Record<Route['pathname'], string> = {
   '/api/healthz': DEFAULT_TEMPLATE,
   '/api/config': DEFAULT_TEMPLATE,
   '/api/sprite': DEFAULT_TEMPLATE,
+
+  // qitmeer desc
+  '/qitmeer_txs': DEFAULT_TEMPLATE,
+  '/qitmeer_tx/[hash]': 'View transaction %hash% on %network_title%',
+  '/qitmeer_blocks': DEFAULT_TEMPLATE,
+  '/qitmeer_block/[height_or_hash]': 'View the transactions, token transfers, and uncles for block %height_or_hash%',
+  '/qitmeer_address/[hash]': 'View the account balance, transactions, and other data for %hash% on the %network_title%',
 };
 
 const TEMPLATE_MAP_ENHANCED: Partial<Record<Route['pathname'], string>> = {

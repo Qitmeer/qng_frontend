@@ -95,6 +95,8 @@ import type {
   OptimismL2BatchBlocks,
 } from 'types/api/optimisticL2';
 import type { Pool, PoolsResponse } from 'types/api/pools';
+import type { UTXOBlock, UTXOBlocksResponse } from 'types/api/qitmeer_block';
+import type { UTXOTransaction, UTXOTransactionsResponseValidated } from 'types/api/qitmeer_tx';
 import type { RawTracesResponse } from 'types/api/rawTrace';
 import type {
   RewardsConfigResponse,
@@ -1186,6 +1188,59 @@ export const RESOURCES = {
   block_countdown: {
     path: '/api',
   },
+  // qitmeer api
+  qitmeer_block: {
+    path: '/api/v2/qitmeer/blocks/:height_or_hash',
+    pathParams: [ 'height_or_hash' as const ],
+  },
+  qitmeer_block_txs: {
+    path: '/api/v2/qitmeer/:height_or_hash/transactions',
+    pathParams: [ 'height_or_hash' as const ],
+  },
+  qitmeer_blocks: {
+    path: '/api/v2/qitmeer/blocks',
+    filterFields: [ 'type' as const ],
+  },
+  qitmeer_txs: {
+    path: '/api/v2/qitmeer/transactions',
+    filterFields: [ 'filter' as const, 'type' as const, 'method' as const ],
+  },
+  qitmeer_tx: {
+    path: '/api/v2/qitmeer/transactions/:hash',
+    pathParams: [ 'hash' as const ],
+  },
+  qitmeer_txs_validated: {
+    path: '/api/v2/qitmeer/transactions',
+    filterFields: [ 'filter' as const, 'type' as const, 'method' as const ],
+  },
+  qitmeer_txs_pending: {
+    path: '/api/v2/qitmeer/transactions',
+    filterFields: [ 'filter' as const, 'type' as const, 'method' as const ],
+  },
+  qitmeer_txs_with_blobs: {
+    path: '/api/v2/qitmeer/transactions',
+    filterFields: [ 'type' as const ],
+  },
+  qitmeer_address: {
+    path: '/api/v2/qitmeer/addresses/:hash',
+    pathParams: [ 'hash' as const ],
+  },
+  qitmeer_address_txs: {
+    path: '/api/v2/qitmeer/addresses/:hash/transactions',
+    pathParams: [ 'hash' as const ],
+  },
+  qitmeer_address_txs_validated: {
+    path: '/api/v2/qitmeer/addresses/:hash/transactions',
+    pathParams: [ 'hash' as const ],
+  },
+  qitmeer_address_txs_pending: {
+    path: '/api/v2/qitmeer/addresses/:hash/transactions',
+    pathParams: [ 'hash' as const ],
+  },
+  qitmeer_address_txs_with_blobs: {
+    path: '/api/v2/qitmeer/addresses/:hash/transactions',
+    pathParams: [ 'hash' as const ],
+  },
 };
 
 export type ResourceName = keyof typeof RESOURCES;
@@ -1239,7 +1294,8 @@ export type PaginatedResources = 'blocks' | 'block_txs' | 'block_election_reward
 'watchlist' | 'private_tags_address' | 'private_tags_tx' |
 'domains_lookup' | 'addresses_lookup' | 'user_ops' | 'validators_stability' | 'validators_blackfort' | 'noves_address_history' |
 'token_transfers_all' | 'scroll_l2_txn_batches' | 'scroll_l2_txn_batch_txs' | 'scroll_l2_txn_batch_blocks' |
-'scroll_l2_deposits' | 'scroll_l2_withdrawals' | 'advanced_filter' | 'pools';
+  'scroll_l2_deposits' | 'scroll_l2_withdrawals' | 'advanced_filter' | 'pools' | 'qitmeer_blocks' | 'qitmeer_block_txs' | 'qitmeer_address_txs' |
+  'qitmeer_address_txs_pending' | 'qitmeer_address_txs_with_blobs' | 'qitmeer_txs_validated';
 
 export type PaginatedResponse<Q extends PaginatedResources> = ResourcePayload<Q>;
 
@@ -1435,6 +1491,11 @@ Q extends 'advanced_filter' ? AdvancedFilterResponse :
 Q extends 'advanced_filter_methods' ? AdvancedFilterMethodsResponse :
 Q extends 'pools' ? PoolsResponse :
 Q extends 'pool' ? Pool :
+Q extends 'qitmeer_block' ? UTXOBlock :
+Q extends 'qitmeer_blocks' ? UTXOBlocksResponse :
+Q extends 'qitmeer_block_txs' ? UTXOTransactionsResponseValidated :
+Q extends 'qitmeer_txs' ? UTXOTransactionsResponseValidated :
+Q extends 'qitmeer_tx' ? UTXOTransaction :
 never;
 /* eslint-enable @stylistic/indent */
 
@@ -1472,6 +1533,8 @@ Q extends 'address_mud_records' ? AddressMudRecordsFilter :
 Q extends 'token_transfers_all' ? TokenTransferFilters :
 Q extends 'advanced_filter' ? AdvancedFilterParams :
 Q extends 'pools' ? { query: string } :
+Q extends 'qitmeer_txs' | 'qitmeer_txs_validated' | 'qitmeer_txs_pending' | 'qitmeer_txs_with_blobs' ? TTxsWithBlobsFilters :
+Q extends 'qitmeer_blocks' | 'qitmeer_block_txs' ? BlockFilters :
 never;
 /* eslint-enable @stylistic/indent */
 

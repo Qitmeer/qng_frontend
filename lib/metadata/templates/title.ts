@@ -69,6 +69,13 @@ const TEMPLATE_MAP: Record<Route['pathname'], string> = {
   '/api/healthz': '%network_name% node API health check',
   '/api/config': '%network_name% node API app config',
   '/api/sprite': '%network_name% node API SVG sprite content',
+
+  // qitmeer routes
+  '/qitmeer_txs': '%network_name% transactions - %network_name% explorer',
+  '/qitmeer_tx/[hash]': '%network_name% transaction %hash%',
+  '/qitmeer_block/[height_or_hash]': '%network_name% block %height_or_hash%',
+  '/qitmeer_blocks': '%network_name% blocks',
+  '/qitmeer_address/[hash]': '%network_name% address details for %hash%',
 };
 
 const TEMPLATE_MAP_ENHANCED: Partial<Record<Route['pathname'], string>> = {
