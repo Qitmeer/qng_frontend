@@ -25,8 +25,10 @@ type HookResult = UseQueryResult<TxsResponse, ResourceError<unknown>> & {
   setSortByValue: (value: SortingValue) => void;
 };
 
-export default function useTxsSort(queryResult: UseQueryResult<TxsResponse, ResourceError<unknown>>,
+export default function useTxsSort(
+  queryResult: UseQueryResult<TxsResponse, ResourceError<unknown>>,
 ): HookResult {
+
   const [ sorting, setSorting ] = React.useState<SortingValue>(cookies.get(cookies.NAMES.TXS_SORT) as SortingValue);
 
   const setSortByValue = React.useCallback((value: SortingValue) => {
@@ -52,4 +54,5 @@ export default function useTxsSort(queryResult: UseQueryResult<TxsResponse, Reso
       sorting,
     };
   }, [ queryResult, setSortByValue, sorting ]);
+
 }

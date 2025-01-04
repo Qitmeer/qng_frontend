@@ -266,19 +266,19 @@ export default function useNavItems(): ReturnType {
       {
         text: 'UTXOExplorer',
         icon: 'globe-b',
-        isActive: utxoblockchainNavItems.flat().some((item) => isInternalItem(item) && item.isActive),
+        isActive: utxoblockchainNavItems.flat().some(item => isInternalItem(item) && item.isActive),
         subItems: utxoblockchainNavItems,
       },
       {
         text: 'Blockchain',
         icon: 'globe-b',
-        isActive: blockchainNavItems.flat().some((item) => isInternalItem(item) && item.isActive),
+        isActive: blockchainNavItems.flat().some(item => isInternalItem(item) && item.isActive),
         subItems: blockchainNavItems,
       },
       {
         text: 'Tokens',
         icon: 'token',
-        isActive: tokensNavItems.flat().some((item) => isInternalItem(item) && item.isActive),
+        isActive: tokensNavItems.flat().some(item => isInternalItem(item) && item.isActive),
         subItems: tokensNavItems,
       },
       config.features.marketplace.isEnabled ? {
@@ -296,13 +296,13 @@ export default function useNavItems(): ReturnType {
       apiNavItems.length > 0 && {
         text: 'API',
         icon: 'restAPI',
-        isActive: apiNavItems.some((item) => isInternalItem(item) && item.isActive),
+        isActive: apiNavItems.some(item => isInternalItem(item) && item.isActive),
         subItems: apiNavItems,
       },
       {
         text: 'Other',
         icon: 'gear',
-        isActive: otherNavItems.flat().some((item) => isInternalItem(item) && item.isActive),
+        isActive: otherNavItems.flat().some(item => isInternalItem(item) && item.isActive),
         subItems: otherNavItems,
       },
     ].filter(Boolean);
