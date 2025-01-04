@@ -20,23 +20,14 @@ export const SORT_OPTIONS: Array<SelectOption<TransactionsSortingValue>> = [
 
 type SortingValue = TransactionsSortingValue | undefined;
 
-type HookResult = UseQueryResult<
-  TxsResponse,
-  ResourceError<unknown>
-> & {
+type HookResult = UseQueryResult<TxsResponse, ResourceError<unknown>> & {
   sorting: SortingValue;
   setSortByValue: (value: SortingValue) => void;
 };
 
-export default function useTxsSort(
-  queryResult: UseQueryResult<
-    TxsResponse,
-    ResourceError<unknown>
-  >,
+export default function useTxsSort(queryResult: UseQueryResult<TxsResponse, ResourceError<unknown>>,
 ): HookResult {
-  const [ sorting, setSorting ] = React.useState<SortingValue>(
-    cookies.get(cookies.NAMES.TXS_SORT) as SortingValue,
-  );
+  const [ sorting, setSorting ] = React.useState<SortingValue>(cookies.get(cookies.NAMES.TXS_SORT) as SortingValue);
 
   const setSortByValue = React.useCallback((value: SortingValue) => {
     setSorting((prevVal: SortingValue) => {
@@ -56,10 +47,7 @@ export default function useTxsSort(
 
     return {
       ...queryResult,
-      data: {
-        ...queryResult.data,
-        items: queryResult.data.items.slice().sort(sortTxs(sorting)),
-      },
+      data: { ...queryResult.data, items: queryResult.data.items.slice().sort(sortTxs(sorting)) },
       setSortByValue,
       sorting,
     };

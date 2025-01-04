@@ -198,17 +198,17 @@ export const RESOURCES = {
   watchlist: {
     path: '/api/account/v2/user/watchlist{/:id}',
     pathParams: [ 'id' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   private_tags_address: {
     path: '/api/account/v2/user/tags/address{/:id}',
     pathParams: [ 'id' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   private_tags_tx: {
     path: '/api/account/v2/user/tags/transaction{/:id}',
     pathParams: [ 'id' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   api_keys: {
     path: '/api/account/v2/user/api_keys{/:id}',
@@ -235,20 +235,16 @@ export const RESOURCES = {
   token_info_applications_config: {
     path: '/api/v1/chains/:chainId/token-info-submissions/selectors',
     pathParams: [ 'chainId' as const ],
-    endpoint: getFeaturePayload(config.features.addressVerification)?.api
-      .endpoint,
-    basePath: getFeaturePayload(config.features.addressVerification)?.api
-      .basePath,
+    endpoint: getFeaturePayload(config.features.addressVerification)?.api.endpoint,
+    basePath: getFeaturePayload(config.features.addressVerification)?.api.basePath,
     needAuth: true,
   },
 
   token_info_applications: {
     path: '/api/v1/chains/:chainId/token-info-submissions{/:id}',
     pathParams: [ 'chainId' as const, 'id' as const ],
-    endpoint: getFeaturePayload(config.features.addressVerification)?.api
-      .endpoint,
-    basePath: getFeaturePayload(config.features.addressVerification)?.api
-      .basePath,
+    endpoint: getFeaturePayload(config.features.addressVerification)?.api.endpoint,
+    basePath: getFeaturePayload(config.features.addressVerification)?.api.basePath,
     needAuth: true,
   },
 
@@ -299,13 +295,7 @@ export const RESOURCES = {
     pathParams: [ 'chainId' as const ],
     endpoint: getFeaturePayload(config.features.nameService)?.api.endpoint,
     basePath: getFeaturePayload(config.features.nameService)?.api.basePath,
-    filterFields: [
-      'address' as const,
-      'resolved_to' as const,
-      'owned_by' as const,
-      'only_active' as const,
-      'protocols' as const,
-    ],
+    filterFields: [ 'address' as const, 'resolved_to' as const, 'owned_by' as const, 'only_active' as const, 'protocols' as const ],
   },
   address_domain: {
     path: '/api/v1/:chainId/addresses/:address',
@@ -330,11 +320,7 @@ export const RESOURCES = {
     pathParams: [ 'chainId' as const ],
     endpoint: getFeaturePayload(config.features.nameService)?.api.endpoint,
     basePath: getFeaturePayload(config.features.nameService)?.api.basePath,
-    filterFields: [
-      'name' as const,
-      'only_active' as const,
-      'protocols' as const,
-    ],
+    filterFields: [ 'name' as const, 'only_active' as const, 'protocols' as const ],
   },
   domain_protocols: {
     path: '/api/v1/:chainId/protocols',
@@ -362,10 +348,8 @@ export const RESOURCES = {
   public_tag_application: {
     path: '/api/v1/chains/:chainId/metadata-submissions/tag',
     pathParams: [ 'chainId' as const ],
-    endpoint: getFeaturePayload(config.features.publicTagsSubmission)?.api
-      .endpoint,
-    basePath: getFeaturePayload(config.features.publicTagsSubmission)?.api
-      .basePath,
+    endpoint: getFeaturePayload(config.features.publicTagsSubmission)?.api.endpoint,
+    basePath: getFeaturePayload(config.features.publicTagsSubmission)?.api.basePath,
   },
 
   // VISUALIZATION
@@ -460,17 +444,17 @@ export const RESOURCES = {
   block_withdrawals: {
     path: '/api/v2/blocks/:height_or_hash/withdrawals',
     pathParams: [ 'height_or_hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   block_epoch: {
     path: '/api/v2/blocks/:height_or_hash/epoch',
     pathParams: [ 'height_or_hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   block_election_rewards: {
     path: '/api/v2/blocks/:height_or_hash/election-rewards/:reward_type',
     pathParams: [ 'height_or_hash' as const, 'reward_type' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   txs_stats: {
     path: '/api/v2/transactions/stats',
@@ -489,12 +473,12 @@ export const RESOURCES = {
   },
   txs_watchlist: {
     path: '/api/v2/transactions/watchlist',
-    filterFields: [],
+    filterFields: [ ],
   },
   txs_execution_node: {
     path: '/api/v2/transactions/execution-node/:hash',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   tx: {
     path: '/api/v2/transactions/:hash',
@@ -503,12 +487,12 @@ export const RESOURCES = {
   tx_internal_txs: {
     path: '/api/v2/transactions/:hash/internal-transactions',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   tx_logs: {
     path: '/api/v2/transactions/:hash/logs',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   tx_token_transfers: {
     path: '/api/v2/transactions/:hash/token-transfers',
@@ -522,7 +506,7 @@ export const RESOURCES = {
   tx_state_changes: {
     path: '/api/v2/transactions/:hash/state-changes',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   tx_blobs: {
     path: '/api/v2/transactions/:hash/blobs',
@@ -534,7 +518,7 @@ export const RESOURCES = {
   },
   withdrawals: {
     path: '/api/v2/withdrawals',
-    filterFields: [],
+    filterFields: [ ],
   },
   withdrawals_counters: {
     path: '/api/v2/withdrawals/counters',
@@ -543,7 +527,7 @@ export const RESOURCES = {
   // ADDRESSES
   addresses: {
     path: '/api/v2/addresses/',
-    filterFields: [],
+    filterFields: [ ],
   },
   addresses_metadata_search: {
     path: '/api/v2/proxy/metadata/addresses',
@@ -585,12 +569,12 @@ export const RESOURCES = {
   address_blocks_validated: {
     path: '/api/v2/addresses/:hash/blocks-validated',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   address_coin_balance: {
     path: '/api/v2/addresses/:hash/coin-balance-history',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   address_coin_balance_chart: {
     path: '/api/v2/addresses/:hash/coin-balance-history-by-day',
@@ -599,7 +583,7 @@ export const RESOURCES = {
   address_logs: {
     path: '/api/v2/addresses/:hash/logs',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   address_tokens: {
     path: '/api/v2/addresses/:hash/tokens',
@@ -619,12 +603,12 @@ export const RESOURCES = {
   address_withdrawals: {
     path: '/api/v2/addresses/:hash/withdrawals',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   address_epoch_rewards: {
     path: '/api/v2/addresses/:hash/election-rewards',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   address_xstar_score: {
     path: '/api/v2/proxy/xname/addresses/:hash',
@@ -678,12 +662,12 @@ export const RESOURCES = {
   token_holders: {
     path: '/api/v2/tokens/:hash/holders',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   token_transfers: {
     path: '/api/v2/tokens/:hash/transfers',
     pathParams: [ 'hash' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   token_inventory: {
     path: '/api/v2/tokens/:hash/instances',
@@ -711,17 +695,17 @@ export const RESOURCES = {
   token_instance_transfers: {
     path: '/api/v2/tokens/:hash/instances/:id/transfers',
     pathParams: [ 'hash' as const, 'id' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   token_instance_holders: {
     path: '/api/v2/tokens/:hash/instances/:id/holders',
     pathParams: [ 'hash' as const, 'id' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   token_instance_refresh_metadata: {
     path: '/api/v2/tokens/:hash/instances/:id/refetch-metadata',
     pathParams: [ 'hash' as const, 'id' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   // TOKEN TRANSFERS
@@ -798,7 +782,7 @@ export const RESOURCES = {
   // optimistic L2
   optimistic_l2_deposits: {
     path: '/api/v2/optimism/deposits',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   optimistic_l2_deposits_count: {
@@ -807,7 +791,7 @@ export const RESOURCES = {
 
   optimistic_l2_withdrawals: {
     path: '/api/v2/optimism/withdrawals',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   optimistic_l2_withdrawals_count: {
@@ -816,7 +800,7 @@ export const RESOURCES = {
 
   optimistic_l2_output_roots: {
     path: '/api/v2/optimism/output-roots',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   optimistic_l2_output_roots_count: {
@@ -825,7 +809,7 @@ export const RESOURCES = {
 
   optimistic_l2_txn_batches: {
     path: '/api/v2/optimism/batches',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   optimistic_l2_txn_batches_count: {
@@ -840,18 +824,18 @@ export const RESOURCES = {
   optimistic_l2_txn_batch_txs: {
     path: '/api/v2/transactions/optimism-batch/:number',
     pathParams: [ 'number' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   optimistic_l2_txn_batch_blocks: {
     path: '/api/v2/blocks/optimism-batch/:number',
     pathParams: [ 'number' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   optimistic_l2_dispute_games: {
     path: '/api/v2/optimism/games',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   optimistic_l2_dispute_games_count: {
@@ -861,7 +845,7 @@ export const RESOURCES = {
   // MUD worlds on optimism
   mud_worlds: {
     path: '/api/v2/mud/worlds',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   address_mud_tables: {
@@ -900,7 +884,7 @@ export const RESOURCES = {
   arbitrum_l2_messages: {
     path: '/api/v2/arbitrum/messages/:direction',
     pathParams: [ 'direction' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   arbitrum_l2_messages_count: {
@@ -910,7 +894,7 @@ export const RESOURCES = {
 
   arbitrum_l2_txn_batches: {
     path: '/api/v2/arbitrum/batches',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   arbitrum_l2_txn_batches_count: {
@@ -925,19 +909,19 @@ export const RESOURCES = {
   arbitrum_l2_txn_batch_txs: {
     path: '/api/v2/transactions/arbitrum-batch/:number',
     pathParams: [ 'number' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   arbitrum_l2_txn_batch_blocks: {
     path: '/api/v2/blocks/arbitrum-batch/:number',
     pathParams: [ 'number' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   // zkEvm L2
   zkevm_l2_deposits: {
     path: '/api/v2/zkevm/deposits',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   zkevm_l2_deposits_count: {
@@ -946,7 +930,7 @@ export const RESOURCES = {
 
   zkevm_l2_withdrawals: {
     path: '/api/v2/zkevm/withdrawals',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   zkevm_l2_withdrawals_count: {
@@ -955,7 +939,7 @@ export const RESOURCES = {
 
   zkevm_l2_txn_batches: {
     path: '/api/v2/zkevm/batches',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   zkevm_l2_txn_batches_count: {
@@ -970,13 +954,13 @@ export const RESOURCES = {
   zkevm_l2_txn_batch_txs: {
     path: '/api/v2/transactions/zkevm-batch/:number',
     pathParams: [ 'number' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   // zkSync L2
   zksync_l2_txn_batches: {
     path: '/api/v2/zksync/batches',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   zksync_l2_txn_batches_count: {
@@ -991,13 +975,13 @@ export const RESOURCES = {
   zksync_l2_txn_batch_txs: {
     path: '/api/v2/transactions/zksync-batch/:number',
     pathParams: [ 'number' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   // SHIBARIUM L2
   shibarium_deposits: {
     path: '/api/v2/shibarium/deposits',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   shibarium_deposits_count: {
@@ -1006,7 +990,7 @@ export const RESOURCES = {
 
   shibarium_withdrawals: {
     path: '/api/v2/shibarium/withdrawals',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   shibarium_withdrawals_count: {
@@ -1016,7 +1000,7 @@ export const RESOURCES = {
   // SCROLL L2
   scroll_l2_deposits: {
     path: '/api/v2/scroll/deposits',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   scroll_l2_deposits_count: {
@@ -1025,7 +1009,7 @@ export const RESOURCES = {
 
   scroll_l2_withdrawals: {
     path: '/api/v2/scroll/withdrawals',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   scroll_l2_withdrawals_count: {
@@ -1034,7 +1018,7 @@ export const RESOURCES = {
 
   scroll_l2_txn_batches: {
     path: '/api/v2/scroll/batches',
-    filterFields: [],
+    filterFields: [ ],
   },
 
   scroll_l2_txn_batches_count: {
@@ -1049,13 +1033,13 @@ export const RESOURCES = {
   scroll_l2_txn_batch_txs: {
     path: '/api/v2/transactions/scroll-batch/:number',
     pathParams: [ 'number' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   scroll_l2_txn_batch_blocks: {
     path: '/api/v2/blocks/scroll-batch/:number',
     pathParams: [ 'number' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
 
   // NOVES-FI
@@ -1066,7 +1050,7 @@ export const RESOURCES = {
   noves_address_history: {
     path: '/api/v2/proxy/noves-fi/addresses/:address/transactions',
     pathParams: [ 'address' as const ],
-    filterFields: [],
+    filterFields: [ ],
   },
   noves_describe_txs: {
     path: '/api/v2/proxy/noves-fi/transaction-descriptions',
@@ -1100,7 +1084,7 @@ export const RESOURCES = {
   },
   validators_blackfort: {
     path: '/api/v2/validators/blackfort',
-    filterFields: [],
+    filterFields: [ ],
   },
   validators_blackfort_counters: {
     path: '/api/v2/validators/blackfort/counters',

@@ -148,6 +148,7 @@ const tvlIndicator: TChainIndicator<'stats_charts_market'> = {
     } ]),
   },
 };
+
 const INDICATORS = [
   dailyTxsIndicator,
   coinPriceIndicator,
