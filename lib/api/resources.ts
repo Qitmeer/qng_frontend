@@ -1194,7 +1194,7 @@ export const RESOURCES = {
     pathParams: [ 'height_or_hash' as const ],
   },
   qitmeer_block_txs: {
-    path: '/api/v2/qitmeer/:height_or_hash/transactions',
+    path: '/api/v2/qitmeer/blocks/:height_or_hash/transactions',
     pathParams: [ 'height_or_hash' as const ],
   },
   qitmeer_blocks: {
@@ -1295,7 +1295,7 @@ export type PaginatedResources = 'blocks' | 'block_txs' | 'block_election_reward
 'domains_lookup' | 'addresses_lookup' | 'user_ops' | 'validators_stability' | 'validators_blackfort' | 'noves_address_history' |
 'token_transfers_all' | 'scroll_l2_txn_batches' | 'scroll_l2_txn_batch_txs' | 'scroll_l2_txn_batch_blocks' |
   'scroll_l2_deposits' | 'scroll_l2_withdrawals' | 'advanced_filter' | 'pools' | 'qitmeer_blocks' | 'qitmeer_block_txs' | 'qitmeer_address_txs' |
-  'qitmeer_address_txs_pending' | 'qitmeer_address_txs_with_blobs' | 'qitmeer_txs_validated';
+  'qitmeer_address_txs_pending' | 'qitmeer_address_txs_with_blobs' | 'qitmeer_txs_validated' | 'qitmeer_txs_pending' ;
 
 export type PaginatedResponse<Q extends PaginatedResources> = ResourcePayload<Q>;
 
@@ -1533,7 +1533,7 @@ Q extends 'address_mud_records' ? AddressMudRecordsFilter :
 Q extends 'token_transfers_all' ? TokenTransferFilters :
 Q extends 'advanced_filter' ? AdvancedFilterParams :
 Q extends 'pools' ? { query: string } :
-Q extends 'qitmeer_txs' | 'qitmeer_txs_validated' | 'qitmeer_txs_pending' | 'qitmeer_txs_with_blobs' ? TTxsWithBlobsFilters :
+Q extends 'qitmeer_txs' | 'qitmeer_txs_validated' | 'qitmeer_txs_pending' ? TTxsFilters :
 Q extends 'qitmeer_blocks' | 'qitmeer_block_txs' ? BlockFilters :
 never;
 /* eslint-enable @stylistic/indent */

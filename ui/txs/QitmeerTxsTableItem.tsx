@@ -8,7 +8,7 @@ import React from 'react';
 
 import type { UTXOTransaction } from 'types/api/qitmeer_tx';
 
-import TxEntity from 'ui/shared/entities/tx/TxEntity';
+import TUTXOTxEntity from 'ui/shared/entities/tx/UTXOTxEntity';
 import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
 import TxAdditionalInfo from 'ui/txs/TxAdditionalInfo';
 
@@ -36,7 +36,7 @@ const QitmeerTxsTableItem = ({ tx, enableTimeIncrement, isLoading }: Props) => {
       </Td>
       <Td pr={ 4 }>
         <VStack alignItems="start" lineHeight="24px">
-          <TxEntity
+          <TUTXOTxEntity
             hash={ tx.hash }
             isLoading={ isLoading }
             fontWeight={ 700 }

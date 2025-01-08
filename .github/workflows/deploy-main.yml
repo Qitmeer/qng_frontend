@@ -23,5 +23,5 @@ concurrency:
 jobs:
   publish_image:
     name: Publish Docker image
-    uses: './.github/workflows/publish-image.yml'
+    uses: './.github/workflows/publish-qitmeer-image.yml'
     secrets: inherit
