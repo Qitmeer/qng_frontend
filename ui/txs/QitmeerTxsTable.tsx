@@ -42,10 +42,10 @@ const QitmeerTxsTable = ({
           <Tr>
             <Th width="54px"></Th>
             <Th width="180px">Txn hash</Th>
-            <Th width="160px">Vin</Th>
-            <Th width="224px">To</Th>
-            <Th width="224px">Amount</Th>
-            <Th width="180px">vout index</Th>
+            <Th width="500px">Vin</Th>
+            <Th width="450px">To</Th>
+            <Th width="100px">Amount</Th>
+            <Th width="50px">vout index</Th>
           </Tr>
         </TheadSticky>
         <Tbody>
