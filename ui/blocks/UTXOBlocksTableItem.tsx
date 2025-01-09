@@ -7,6 +7,7 @@ import type { UTXOBlock } from 'types/api/qitmeer_block';
 
 import { route } from 'nextjs-routes';
 
+import QitmeerAddressEntity from 'ui/shared/entities/address/QitmeerAddressEntity';
 import UTXOBlockEntity from 'ui/shared/entities/block/UTXOBlockEntity';
 import LinkInternal from 'ui/shared/links/LinkInternal';
 import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
@@ -69,7 +70,14 @@ const UTXOBlocksTableItem = ({
       </Td>
       <Td fontSize="sm">
         <Skeleton isLoaded={!isLoading} display="inline-block">
-          {data.miner_hash}
+          <QitmeerAddressEntity
+            address={ data.miner_hash }
+            isLoading={ isLoading }
+            fontWeight={ 700 }
+            noIcon
+            maxW="100%"
+            truncation="constant_long"
+          />
         </Skeleton>
       </Td>
       <Td isNumeric fontSize="sm">

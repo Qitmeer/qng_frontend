@@ -34,7 +34,7 @@ const UTXOBlocksTable = ({
         <Thead top={top}>
           <Tr>
             <Th width="120px">BlockOrder</Th>
-            <Th width="500px">Hash</Th>
+            <Th width="600px">Hash</Th>
             <Th width="120px">Coinbase</Th>
             <Th width="200px">Algorithm</Th>
             <Th width="400px">Miner</Th>
