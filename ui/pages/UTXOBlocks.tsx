@@ -9,6 +9,7 @@ import useIsMobile from 'lib/hooks/useIsMobile';
 import getQueryParamString from 'lib/router/getQueryParamString';
 import { BLOCK } from 'stubs/block';
 import { generateListStub } from 'stubs/utils';
+import BlocksContent from 'ui/blocks/BlocksContent';
 import BlocksTabSlot from 'ui/blocks/BlocksTabSlot';
 import UTXOBlocksContent from 'ui/blocks/UTXOBlocksContent';
 import PageTitle from 'ui/shared/Page/PageTitle';
@@ -78,7 +79,7 @@ const BlocksPageContent = () => {
       title: 'All',
       component: <UTXOBlocksContent type="block" query={blocksQuery} />,
     },
-    // { id: 'reorgs', title: 'Forked', component: <BlocksContent type="reorg" query={ reorgsQuery }/> },
+    { id: 'reorgs', title: 'Forked', component: <BlocksContent type="reorg" query={ reorgsQuery }/> },
     // { id: 'uncles', title: 'Uncles', component: <BlocksContent type="uncle" query={ unclesQuery }/> },
   ];
   return (

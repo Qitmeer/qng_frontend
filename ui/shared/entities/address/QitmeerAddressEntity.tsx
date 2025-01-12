@@ -81,6 +81,9 @@ const QitmeerAddressEntry = (props: EntityProps) => {
   const partsProps = distributeEntityProps(props);
   const highlightContext = useAddressHighlightContext(props.noHighlight);
   const altHash = props.address;
+  if (altHash === undefined) {
+    return '';
+  }
 
   return (
     <Container
