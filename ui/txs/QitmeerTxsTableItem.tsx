@@ -8,6 +8,7 @@ import React from 'react';
 
 import type { UTXOTransaction } from 'types/api/qitmeer_tx';
 
+import QitmeerAddressEntity from 'ui/shared/entities/address/QitmeerAddressEntity';
 import TUTXOTxEntity from 'ui/shared/entities/tx/UTXOTxEntity';
 import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
 import TxAdditionalInfo from 'ui/txs/TxAdditionalInfo';
@@ -54,7 +55,16 @@ const QitmeerTxsTableItem = ({ tx, enableTimeIncrement, isLoading }: Props) => {
         </VStack>
       </Td>
       <Td>{ tx.vin }</Td>
-      <Td whiteSpace="nowrap">{ tx.to_address }</Td>
+      <Td whiteSpace="nowrap">
+        <QitmeerAddressEntity
+          address={ tx.to_address }
+          isLoading={ isLoading }
+          fontWeight={ 700 }
+          noIcon
+          maxW="100%"
+          truncation="constant_long"
+        />
+      </Td>
       <Td whiteSpace="nowrap">{ tx.amount }</Td>
       <Td whiteSpace="nowrap">{ tx.index }</Td>
     </Tr>

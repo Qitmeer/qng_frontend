@@ -196,7 +196,7 @@ export default function useNavItems(): ReturnType {
         },
       ].filter(Boolean);
     }
-    const utxoblockchainNavItems = [ utxotxs, utxoblocks ].filter(Boolean);
+    const utxoblockchainNavItems = [ utxoblocks, utxotxs ].filter(Boolean);
     const tokensNavItems = [
       {
         text: 'Tokens',
@@ -264,13 +264,13 @@ export default function useNavItems(): ReturnType {
 
     const mainNavItems: ReturnType['mainNavItems'] = [
       {
-        text: 'UTXOExplorer',
+        text: 'Assets',
         icon: 'globe-b',
         isActive: utxoblockchainNavItems.flat().some(item => isInternalItem(item) && item.isActive),
         subItems: utxoblockchainNavItems,
       },
       {
-        text: 'Blockchain',
+        text: 'Balances && Contracts',
         icon: 'globe-b',
         isActive: blockchainNavItems.flat().some(item => isInternalItem(item) && item.isActive),
         subItems: blockchainNavItems,
