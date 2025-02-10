@@ -1,4 +1,4 @@
-import { Text, Button, useColorModeValue, Image, Box, Flex, Switch, useBoolean, Input, FormControl, Alert, Skeleton, Divider } from '@chakra-ui/react';
+import { Text, Button, useColorModeValue, Image, Box, Flex, Switch, useBoolean, Input, FormControl, Alert, Divider } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import type { ChangeEvent } from 'react';
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
@@ -7,6 +7,7 @@ import { useRewardsContext } from 'lib/contexts/rewards';
 import * as cookies from 'lib/cookies';
 import { apos } from 'lib/html-entities';
 import useWallet from 'lib/web3/useWallet';
+import Skeleton from 'ui/shared/chakra/Skeleton';
 import FormInputPlaceholder from 'ui/shared/forms/inputs/FormInputPlaceholder';
 import LinkExternal from 'ui/shared/links/LinkExternal';
 import useProfileQuery from 'ui/snippets/auth/useProfileQuery';
@@ -14,7 +15,7 @@ import useProfileQuery from 'ui/snippets/auth/useProfileQuery';
 type Props = {
   goNext: (isReferral: boolean) => void;
   closeModal: () => void;
-  openAuthModal: (isAuth: boolean) => void;
+  openAuthModal: (isAuth: boolean, trySharedLogin?: boolean) => void;
 };
 
 const LoginStepContent = ({ goNext, closeModal, openAuthModal }: Props) => {
@@ -25,7 +26,7 @@ const LoginStepContent = ({ goNext, closeModal, openAuthModal }: Props) => {
   const [ isLoading, setIsLoading ] = useBoolean(false);
   const [ refCode, setRefCode ] = useState(savedRefCode || '');
   const [ refCodeError, setRefCodeError ] = useBoolean(false);
-  const { login, checkUserQuery } = useRewardsContext();
+  const { login, checkUserQuery, rewardsConfigQuery } = useRewardsContext();
   const profileQuery = useProfileQuery();
 
   const isAddressMismatch = useMemo(() =>
@@ -42,6 +43,8 @@ const LoginStepContent = ({ goNext, closeModal, openAuthModal }: Props) => {
     isConnected && !isAddressMismatch && !checkUserQuery.isFetching && !checkUserQuery.data?.exists,
   [ isConnected, isAddressMismatch, checkUserQuery ]);
 
+  const canTrySharedLogin = rewardsConfigQuery.data?.auth.shared_siwe_login && checkUserQuery.data?.exists !== false && !isLoggedIntoAccountWithWallet;
+
   const handleRefCodeChange = React.useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setRefCode(event.target.value);
   }, []);
@@ -55,7 +58,7 @@ const LoginStepContent = ({ goNext, closeModal, openAuthModal }: Props) => {
         setRefCodeError.on();
       } else {
         if (isNewUser) {
-          goNext(Boolean(refCode));
+          goNext(isRefCodeUsed);
         } else {
           closeModal();
           router.push({ pathname: '/account/rewards' }, undefined, { shallow: true });
@@ -73,15 +76,27 @@ const LoginStepContent = ({ goNext, closeModal, openAuthModal }: Props) => {
     }
   }, [ refCode, isRefCodeUsed, isSignUp ]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleLogin = useCallback(async() => {
-    if (isLoggedIntoAccountWithWallet) {
-      loginToRewardsProgram();
-    } else {
-      openAuthModal(Boolean(profileQuery.data?.email));
+  const handleButtonClick = React.useCallback(() => {
+    if (canTrySharedLogin) {
+      return openAuthModal(Boolean(profileQuery.data?.email), true);
     }
-  }, [ loginToRewardsProgram, openAuthModal, isLoggedIntoAccountWithWallet, profileQuery ]);
+
+    if (!isConnected) {
+      return connect();
+    }
+
+    if (isLoggedIntoAccountWithWallet) {
+      return loginToRewardsProgram();
+    }
+
+    return openAuthModal(Boolean(profileQuery.data?.email));
+  }, [ loginToRewardsProgram, openAuthModal, profileQuery, connect, isConnected, isLoggedIntoAccountWithWallet, canTrySharedLogin ]);
 
   const buttonText = useMemo(() => {
+    if (canTrySharedLogin) {
+      return 'Continue with wallet';
+    }
+
     if (!isConnected) {
       return 'Connect wallet';
     }
@@ -89,7 +104,7 @@ const LoginStepContent = ({ goNext, closeModal, openAuthModal }: Props) => {
       return isSignUp ? 'Get started' : 'Continue';
     }
     return profileQuery.data?.email ? 'Add wallet to account' : 'Log in to account';
-  }, [ isConnected, isLoggedIntoAccountWithWallet, profileQuery.data, isSignUp ]);
+  }, [ canTrySharedLogin, isConnected, isLoggedIntoAccountWithWallet, profileQuery.data?.email, isSignUp ]);
 
   return (
     <>
@@ -147,7 +162,7 @@ const LoginStepContent = ({ goNext, closeModal, openAuthModal }: Props) => {
         w="full"
         whiteSpace="normal"
         mb={ 4 }
-        onClick={ isConnected ? handleLogin : connect }
+        onClick={ handleButtonClick }
         isLoading={ isLoading || profileQuery.isLoading || checkUserQuery.isFetching }
         loadingText={ isLoading ? 'Sign message in your wallet' : undefined }
         isDisabled={ isAddressMismatch || refCodeError }
