@@ -75,6 +75,11 @@ async function getExternalJsonContent(envName: string): Promise<string | void> {
 
     fs.readFile(path.resolve(__dirname, fileName), 'utf8', (err, data) => {
       if (err) {
+        if (err.code === 'ENOENT' && process.env.NEXT_PUBLIC_DISABLE_DOWNLOAD_AT_RUN_TIME === 'true') {
+          console.log(`🚨 File not found: ${ fileName }, resolving as undefined.`);
+          resolve(undefined); // 或者 resolve('[]')，取决于你的需求
+          return;
+        }
         console.log(`🚨 Unable to read file: ${ fileName }`);
         reject(err);
         return;

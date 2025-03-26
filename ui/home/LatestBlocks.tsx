@@ -22,6 +22,7 @@ import LinkInternal from 'ui/shared/links/LinkInternal';
 import LatestBlocksItem from './LatestBlocksItem';
 
 const LatestBlocks = () => {
+  const textColor = config.UI.views.color.basicLink;
   const isMobile = useIsMobile();
   // const blocksMaxCount = isMobile ? 2 : 3;
   let blocksMaxCount: number;
