@@ -3,9 +3,11 @@ import React from 'react';
 
 import useApiQuery from 'lib/api/useApiQuery';
 import { STATS_COUNTER } from 'stubs/stats';
+import StatsWidget from 'ui/shared/stats/StatsWidget';
 
 import DataFetchAlert from '../shared/DataFetchAlert';
-import NumberWidget from './NumberWidget';
+
+const UNITS_WITHOUT_SPACE = [ 's' ];
 
 const NumberWidgetsList = () => {
   const { data, isPlaceholderData, isError } = useApiQuery('stats_counters', {
@@ -26,13 +28,20 @@ const NumberWidgetsList = () => {
       {
         data?.counters?.map(({ id, title, value, units, description }, index) => {
 
+          let unitsStr = '';
+          if (units && UNITS_WITHOUT_SPACE.includes(units)) {
+            unitsStr = units;
+          } else if (units) {
+            unitsStr = ' ' + units;
+          }
+
           return (
-            <NumberWidget
+            <StatsWidget
               key={ id + (isPlaceholderData ? index : '') }
               label={ title }
-              value={ `${ Number(value).toLocaleString(undefined, { maximumFractionDigits: 3, notation: 'compact' }) } ${ units ? units : '' }` }
+              value={ `${ Number(value).toLocaleString(undefined, { maximumFractionDigits: 3, notation: 'compact' }) }${ unitsStr }` }
               isLoading={ isPlaceholderData }
-              description={ description }
+              hint={ description }
             />
           );
         })

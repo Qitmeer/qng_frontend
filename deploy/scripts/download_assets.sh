@@ -15,6 +15,10 @@ ASSETS_DIR="$1"
 # Define a list of environment variables containing URLs of external assets
 ASSETS_ENVS=(
     "NEXT_PUBLIC_MARKETPLACE_CONFIG_URL"
+    "NEXT_PUBLIC_MARKETPLACE_CATEGORIES_URL"
+    "NEXT_PUBLIC_MARKETPLACE_SECURITY_REPORTS_URL"
+    "NEXT_PUBLIC_MARKETPLACE_BANNER_CONTENT_URL"
+    "NEXT_PUBLIC_MARKETPLACE_GRAPH_LINKS_URL"
     "NEXT_PUBLIC_FEATURED_NETWORKS"
     "NEXT_PUBLIC_FOOTER_LINKS"
     "NEXT_PUBLIC_NETWORK_LOGO"
@@ -38,8 +42,27 @@ get_target_filename() {
     local name_suffix="${name_prefix%_URL}"
     local name_lc="$(echo "$name_suffix" | tr '[:upper:]' '[:lower:]')"
 
-    # Extract the extension from the URL
-    local extension="${url##*.}"
+    # Check if the URL starts with "file://"
+    if [[ "$url" == file://* ]]; then
+        # Extract the local file path
+        local file_path="${url#file://}"
+        # Get the filename from the local file path
+        local filename=$(basename "$file_path")
+        # Extract the extension from the filename
+        local extension="${filename##*.}"
+    else
+        if [[ "$url" == http* ]]; then
+            # Remove query parameters from the URL and get the filename
+            local filename=$(basename "${url%%\?*}")
+            # Extract the extension from the filename
+            local extension="${filename##*.}"
+        else
+            local extension="json"
+        fi
+    fi
+
+    # Convert the extension to lowercase
+    extension=$(echo "$extension" | tr '[:upper:]' '[:lower:]')
 
     # Construct the custom file name
     echo "$name_lc.$extension"
@@ -54,19 +77,40 @@ download_and_save_asset() {
 
     # Check if the environment variable is set
     if [ -z "${!env_var}" ]; then
-        echo "   [.] Environment variable $env_var is not set. Skipping download."
+        echo "   [.] $env_var: Variable is not set. Skipping download."
         return 1
     fi
 
-    # Download the asset using curl
-    curl -s -o "$destination" "$url"
+    # Check if the URL starts with "file://"
+    if [[ "$url" == file://* ]]; then
+        # Copy the local file to the destination
+        cp "${url#file://}" "$destination"
+    else
+        # Check if the value is a URL
+        if [[ "$url" == http* ]]; then
+            # Download the asset using curl
+            curl -s -o "$destination" "$url"
+        else
+            # Convert single-quoted JSON-like content to valid JSON
+            json_content=$(echo "${!env_var}" | sed "s/'/\"/g")
+
+            # Save the JSON content to a file
+            echo "$json_content" > "$destination"
+        fi
+    fi
+
+    if [[ "$url" == file://* ]] || [[ "$url" == http* ]]; then
+        local source_name=$url
+    else
+        local source_name="raw input"
+    fi
 
     # Check if the download was successful
     if [ $? -eq 0 ]; then
-        echo "   [+] Downloaded $env_var to $destination successfully."
+        echo "   [+] $env_var: Successfully saved file from $source_name to $destination."
         return 0
     else
-        echo "   [-] Failed to download $env_var from $url."
+        echo "   [-] $env_var: Failed to save file from $source_name."
         return 1
     fi
 }
