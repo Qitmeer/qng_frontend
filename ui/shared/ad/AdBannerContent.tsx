@@ -10,6 +10,7 @@ import Skeleton from 'ui/shared/chakra/Skeleton';
 import AdbutlerBanner from './AdbutlerBanner';
 import CoinzillaBanner from './CoinzillaBanner';
 // import GetitBanner from './GetitBanner';
+import CustomBanner from './CustomBanner';
 import HypeBanner from './HypeBanner';
 import SliseBanner from './SliseBanner';
 
@@ -33,6 +34,8 @@ const AdBannerContent = ({ className, isLoading, provider, platform }: Props) =>
       //   return <GetitBanner platform={ platform }/>;
       case 'hype':
         return <HypeBanner platform={ platform }/>;
+      case 'custom':
+        return <CustomBanner platform={ platform }/>;
       case 'slise':
         return <SliseBanner platform={ platform }/>;
     }
