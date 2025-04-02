@@ -415,7 +415,7 @@ This feature is **enabled by default** with the `slise` ads provider. To switch 
 | NEXT_PUBLIC_AD_BANNER_ADDITIONAL_PROVIDER | `adbutler` | Additional ads provider to mix with the main one | - | - | `adbutler` | v1.28.0+ |
 | NEXT_PUBLIC_AD_ADBUTLER_CONFIG_DESKTOP | `{ id: string; width: string; height: string }` | Placement config for desktop Adbutler banner | - | - | `{'id':'123456','width':'728','height':'90'}` | v1.3.0+ |
 | NEXT_PUBLIC_AD_ADBUTLER_CONFIG_MOBILE | `{ id: string; width: number; height: number }` | Placement config for mobile Adbutler banner | - | - | `{'id':'654321','width':'300','height':'100'}` | v1.3.0+ |
-| NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL | `string` | URL of configuration file (.json format only) which contains settings and list of custom banners that will be shown in the home page and token detail page. See below list of available properties for particular banner | - | - | `https://raw.githubusercontent.com/jasonzysun/evm_frontend-configs/main/configs/ad-custom-config/qitmeer.json` |
+| NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL | `string` | URL of configuration file (`.json` format only) which contains settings and list of custom banners that will be shown in the home page and token detail page. See [below](#Custom ads configuration properties) list of available properties for particular banner | - | - | `https://raw.githubusercontent.com/jasonzysun/evm_frontend-configs/main/configs/ad-custom-config/qitmeer.json` |
 
 #### Custom ads configuration properties
 | Variable | Type | Description | Compulsoriness | Default value | Example value |
@@ -424,8 +424,6 @@ This feature is **enabled by default** with the `slise` ads provider. To switch 
 | interval | `number` | Duration (in milliseconds) for how long each banner will be displayed. | - | 60000 | `6000` |
 | randomStart | `boolean` | Set to true to randomly start playing advertisements from any position in the array | - | `false` | `true` |
 | randomNextAd | `boolean` | Set to true to randomly play advertisements | - | `false` | `true` |
-
-&nbsp;
 
 #### Custom banners configuration properties
 

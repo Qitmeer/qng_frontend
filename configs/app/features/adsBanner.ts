@@ -3,7 +3,7 @@ import type { AdButlerConfig } from 'types/client/adButlerConfig';
 import { SUPPORTED_AD_BANNER_PROVIDERS } from 'types/client/adProviders';
 import type { AdBannerProviders, AdBannerAdditionalProviders } from 'types/client/adProviders';
 
-import { getEnvValue, parseEnvJson } from '../utils';
+import { getEnvValue, getExternalAssetFilePath, parseEnvJson } from '../utils';
 
 const provider: AdBannerProviders = (() => {
   const envValue = getEnvValue('NEXT_PUBLIC_AD_BANNER_PROVIDER') as AdBannerProviders;
@@ -58,7 +58,7 @@ const config: Feature<AdsBannerFeaturePayload> = (() => {
       });
     }
   } else if (provider === 'custom') {
-    const configUrl = getEnvValue('NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL');
+    const configUrl = getExternalAssetFilePath('NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL');
     if (configUrl) {
       return Object.freeze({
         title,

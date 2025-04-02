@@ -50,6 +50,10 @@ async function validateEnvs(appEnvs: Record<string, string>) {
       }
     }
 
+    if (appEnvs["NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL"]) {
+      appEnvs.NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL = await getExternalJsonContent("NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL") || '{ "banners": []}';
+    }
+
     await schema.validate(appEnvs, { stripUnknown: false, abortEarly: false });
     !silent && console.log('👍 All good!');
   } catch (_error) {

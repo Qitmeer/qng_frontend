@@ -10,6 +10,7 @@ declare module 'yup' {
 import * as yup from 'yup';
 
 import type { AdButlerConfig } from '../../../types/client/adButlerConfig';
+import type { AdCustomConfig, AdCustomBannerConfig } from '../../../types/client/adCustomConfig';
 import type { AddressProfileAPIConfig } from '../../../types/client/addressProfileAPIConfig';
 import { SUPPORTED_AD_TEXT_PROVIDERS, SUPPORTED_AD_BANNER_PROVIDERS, SUPPORTED_AD_BANNER_ADDITIONAL_PROVIDERS } from '../../../types/client/adProviders';
 import type { AdTextProviders, AdBannerProviders, AdBannerAdditionalProviders } from '../../../types/client/adProviders';
@@ -364,6 +365,39 @@ const adButlerConfigSchema = yup
       .required(),
   });
 
+const adCustomBannerConfigSchema: yup.ObjectSchema<AdCustomBannerConfig> = yup
+  .object()
+  .shape({
+    text: yup.string(),
+    url: yup.string().test(urlTest),
+    desktopImageUrl: yup.string().test(urlTest).required(),
+    mobileImageUrl: yup.string().test(urlTest).required(),
+  });
+
+const adCustomConfigSchema: yup.ObjectSchema<AdCustomConfig> = yup
+  .object()
+  .shape({
+    banners: yup
+      .array()
+      .of(adCustomBannerConfigSchema)
+      .min(1, 'Banners array cannot be empty')
+      .required(),
+    interval: yup.number().positive(),
+    randomStart: yup.boolean(),
+    randomNextAd: yup.boolean(),
+  })
+  .when('NEXT_PUBLIC_AD_BANNER_PROVIDER', {
+    is: (value: AdBannerProviders) => value === 'custom',
+    then: (schema) => schema,
+    otherwise: (schema) =>
+      schema.test(
+        'custom-validation',
+        'NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL cannot not be used without NEXT_PUBLIC_AD_BANNER_PROVIDER being set to "custom"',
+        () => false,
+      ),
+  });
+
+
 const adsBannerSchema = yup
   .object()
   .shape({
@@ -371,6 +405,7 @@ const adsBannerSchema = yup
     NEXT_PUBLIC_AD_BANNER_ADDITIONAL_PROVIDER: yup.string<AdBannerAdditionalProviders>().oneOf(SUPPORTED_AD_BANNER_ADDITIONAL_PROVIDERS),
     NEXT_PUBLIC_AD_ADBUTLER_CONFIG_DESKTOP: adButlerConfigSchema,
     NEXT_PUBLIC_AD_ADBUTLER_CONFIG_MOBILE: adButlerConfigSchema,
+    NEXT_PUBLIC_AD_CUSTOM_CONFIG_URL: adCustomConfigSchema,
   });
 
 // DEPRECATED
