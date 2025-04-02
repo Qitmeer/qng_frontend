@@ -366,7 +366,7 @@ const adButlerConfigSchema = yup
   });
 
 const adCustomBannerConfigSchema: yup.ObjectSchema<AdCustomBannerConfig> = yup
-  .object()
+  .object<AdCustomBannerConfig>()
   .shape({
     text: yup.string(),
     url: yup.string().test(urlTest),
@@ -375,7 +375,9 @@ const adCustomBannerConfigSchema: yup.ObjectSchema<AdCustomBannerConfig> = yup
   });
 
 const adCustomConfigSchema: yup.ObjectSchema<AdCustomConfig> = yup
-  .object()
+  .object<AdCustomConfig>()
+  .transform(replaceQuotes)
+  .json()
   .shape({
     banners: yup
       .array()
